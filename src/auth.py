@@ -56,6 +56,13 @@ class Auth(metaclass=Singleton):
                 "Authentication failed : status code " + str(response.status)
             )
 
+        # Check that the authentication was successful
+        data = response.read().decode("utf-8")
+        result = json.loads(data)
+        connection.close()
+        if result.get("etat", "nok") != "ok":
+            raise Exception("Authentication failed : '" + result["message"] + "'")
+
         # Extract the cookies from the response
         cookies = response.getheader("Set-Cookie")
         if cookies is None:
@@ -77,12 +84,6 @@ class Auth(metaclass=Singleton):
         # Craft the cookie header
         self.cookie = cdp_session + "; " + cdp_session_perm
 
-        # Check that the authentication was successful
-        data = response.read().decode("utf-8")
-        result = json.loads(data)
-        connection.close()
-        if result.get("etat", "nok") != "ok":
-            raise Exception("Authentication failed : '" + result["message"] + "'")
         return data
 
     def request(self, method, path, body=None, headers=None) -> httplib.HTTPSConnection:
