@@ -1,7 +1,7 @@
-from doctree import SubjectTree, DocTree
-from document import Document
-from auth import Auth
 import os
+
+from auth import Auth
+from doctree import SubjectTree
 
 
 def dump_subject(subject: str, path: str, auth: bool = True):

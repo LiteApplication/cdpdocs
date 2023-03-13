@@ -1,7 +1,6 @@
 import http.client as httplib
-from urllib.request import getproxies
 import json
-import os
+from urllib.request import getproxies
 
 CDP_SERVER = "cahier-de-prepa.fr"
 CLASS_NAME = "mp2i-pv"

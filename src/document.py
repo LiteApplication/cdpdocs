@@ -1,5 +1,6 @@
-from auth import AuthAware
 import os
+
+from auth import AuthAware
 
 BUFFER_SIZE = 1024 * 1024
 

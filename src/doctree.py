@@ -1,7 +1,8 @@
-from auth import Auth, AuthAware
-from document import Document
 import re
 import time
+
+from auth import Auth, AuthAware
+from document import Document
 
 
 class DocTree(AuthAware):
