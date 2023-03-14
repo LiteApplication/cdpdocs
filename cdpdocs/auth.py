@@ -110,7 +110,7 @@ class Auth(metaclass=Singleton):
             conn = httplib.HTTPSConnection(CDP_SERVER)
         else:
             print("Using proxy", proxy)
-            conn = httplib.HTTPSConnection(proxy)
+            conn = httplib.HTTPSConnection(proxy.rstrip("/"))
             conn.set_tunnel(CDP_SERVER)
         return conn
 

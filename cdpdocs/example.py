@@ -4,7 +4,7 @@ from auth import Auth
 from doctree import SubjectTree
 
 
-def dump_subject(subject: str, path: str, auth: bool = True):
+def dump_subject(subject: str, path: str):
     tree = SubjectTree(subject)
     tree.explore()
 
@@ -21,6 +21,11 @@ def dump_subject(subject: str, path: str, auth: bool = True):
             doc.save(child_path)
 
 
+def dump_subjects(subjects: list[str], path: str):
+    for subject in subjects:
+        dump_subject(subject, path)
+
+
 if __name__ == "__main__":
     Auth().authenticate("username", "password")
-    dump_subject("maths", ".")
+    dump_subjects(["maths", "info"], ".")
