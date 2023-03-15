@@ -18,5 +18,5 @@ setup(
     url="https://github.com/LiteApplication/cdpdocs",
     packages=["cdpdocs"],
     package_dir={"cdpdocs": "cdpdocs"},
-    scripts=["cdpdocs/cdpdocs.py"],
+    # scripts=["cdpdocs/cdpdocs.py"],
 )

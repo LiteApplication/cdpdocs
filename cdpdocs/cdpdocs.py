@@ -2,8 +2,8 @@
 
 import os
 
-from auth import Auth, set_class_name
-from doctree import SubjectTree
+from .auth import Auth, set_class_name
+from cdpdocs.doctree import SubjectTree
 
 
 def dump_subject(subject: str, path: str):
