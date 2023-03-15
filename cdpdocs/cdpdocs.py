@@ -1,6 +1,8 @@
+#!/usr/bin/env python3
+
 import os
 
-from auth import Auth
+from auth import Auth, set_class_name
 from doctree import SubjectTree
 
 
@@ -27,5 +29,19 @@ def dump_subjects(subjects: list[str], path: str):
 
 
 if __name__ == "__main__":
-    Auth().authenticate("username", "password")
-    dump_subjects(["maths", "info"], ".")
+    import sys
+
+    if len(sys.argv) <= 4:
+        print(
+            f"Usage: {sys.argv[0]} username password classname subject [subjects ...]"
+        )
+        exit(1)
+
+    username = sys.argv[1]
+    password = sys.argv[2]
+    classname = sys.argv[3]
+
+    set_class_name(classname)
+    Auth().authenticate(username, password)
+
+    dump_subjects(sys.argv[4:], ".")

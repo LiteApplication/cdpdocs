@@ -3,10 +3,11 @@ Document downloader for cahier-de-prepa.fr
 
 # Usage
 ```python
-from cdpdocs.auth import Auth
+from cdpdocs.auth import Auth, set_class_name
 from cdpdocs.doctree import SubjectTree
 
 # Authenticate using username and password
+set_class_name("myclass")
 auth = Auth()
 auth.authenticate("username", "password")
 

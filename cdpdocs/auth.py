@@ -3,8 +3,13 @@ import json
 from urllib.request import getproxies
 
 CDP_SERVER = "cahier-de-prepa.fr"
-CLASS_NAME = "mp2i-pv"
+CLASS_NAME = ""
 SKIP_PROXY = False
+
+
+def set_class_name(class_name):
+    global CLASS_NAME
+    CLASS_NAME = class_name
 
 
 class Singleton(type):
@@ -18,6 +23,9 @@ class Singleton(type):
 
 class Auth(metaclass=Singleton):
     def __init__(self, from_file=None):
+        if CLASS_NAME == "":
+            raise Exception("Class name not set")  # use set_class_name()
+
         self.cookie = None
 
         if from_file is not None:
