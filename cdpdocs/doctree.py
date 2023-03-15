@@ -57,7 +57,7 @@ class DocTree(AuthAware):
 
         return children, documents
 
-    def explore(self):
+    def explore(self, query_filenames=True):
         connection = self.request("GET", f"/docs?rep={self.rep_id}")
         response = connection.getresponse()
         if response.status != 200:
@@ -66,13 +66,13 @@ class DocTree(AuthAware):
         data = response.read().decode("utf-8")
         connection.close()
 
-        children, documents = self._parse_page(data)
+        children, documents = self._parse_page(data, query_filenames)
         self.children = children
         self.documents = documents
         self._populated = True
 
         for child in children:
-            child.explore()
+            child.explore(query_filenames=query_filenames)
 
     def by_path(self, path: list[str]) -> "DocTree":
         if not self._populated:
@@ -89,7 +89,7 @@ class SubjectTree(DocTree):
     def __init__(self, subject: str):
         super().__init__(subject=subject, path=[subject])
 
-    def explore(self):
+    def explore(self, query_filenames=True):
         connection = self.request("GET", f"/docs?{self.subject}")
         response = connection.getresponse()
         if response.status != 200:
@@ -98,10 +98,10 @@ class SubjectTree(DocTree):
         data = response.read().decode("utf-8")
         connection.close()
 
-        children, documents = self._parse_page(data)
+        children, documents = self._parse_page(data, query_filenames)
         self.children = children
         self.documents = documents
         self._populated = True
 
         for child in children:
-            child.explore()
+            child.explore(query_filenames=query_filenames)
