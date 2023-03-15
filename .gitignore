@@ -1,3 +1,7 @@
 cahier-de-prepa/
 credentials.json
 __pycache__
+build
+dist
+*.egg-info
+*.egg
