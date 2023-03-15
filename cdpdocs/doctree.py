@@ -84,6 +84,21 @@ class DocTree(AuthAware):
                 return child.by_path(path[1:])
         raise FileNotFoundError(f"Path {path} not found in {self}")
 
+    def iter_documents(self):
+        if not self._populated:
+            raise RuntimeError("Cannot iterate in unpopulated tree")
+        for document in self.documents:
+            yield document
+        for child in self.children:
+            yield from child.iter_documents()
+
+    def iter_children(self):
+        if not self._populated:
+            raise RuntimeError("Cannot iterate in unpopulated tree")
+        for child in self.children:
+            yield child
+            yield from child.iter_children()
+
 
 class SubjectTree(DocTree):
     def __init__(self, subject: str):
