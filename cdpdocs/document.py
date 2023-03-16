@@ -41,7 +41,18 @@ class Document(AuthAware):
             connection.close()
         return filename
 
-    def save(self, path, save_as=None):
+    def save(self, path, save_as=None, overwrite=True):
+        if (
+            save_as is None
+            and self._queried_filename is not None
+            and not overwrite
+            and os.path.exists(os.path.join(path, self._queried_filename))
+        ):  # Early exit if the file already exists and we don't want to overwrite it
+            print(
+                f"Warning : {self._queried_filename} already exists, skipping download"
+            )
+            return
+
         connection = self.request("GET", f"/download?id={self.document_id}")
         response = connection.getresponse()
         if response.status != 200:
@@ -55,6 +66,11 @@ class Document(AuthAware):
         else:
             filename = save_as
 
+        if not overwrite and os.path.exists(os.path.join(path, filename)):
+            connection.close()
+            print(f"Warning : {filename} already exists, skipping download")
+            return
+
         with open(os.path.join(path, filename), "wb") as f:
             # Read the response in chunks
             while True:
@@ -63,6 +79,14 @@ class Document(AuthAware):
                     break
                 f.write(data)
         connection.close()
+
+    def match(self, filename):
+        # Check if the filename matches the document (even without the extension)
+        if self.filename is None:
+            return False
+        # Remove the extension
+        filename = os.path.splitext(filename)[0]
+        return filename in self.filename
 
     def __str__(self) -> str:
         if self.filename is not None:

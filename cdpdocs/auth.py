@@ -1,6 +1,7 @@
 import http.client as httplib
 import json
 from urllib.request import getproxies
+import subprocess
 
 CDP_SERVER = "cahier-de-prepa.fr"
 CLASS_NAME = ""
@@ -108,6 +109,35 @@ class Auth(metaclass=Singleton):
 
     def _get_proxy_connection(self) -> httplib.HTTPSConnection:
         proxies = getproxies()
+        if proxies == {}:
+            # Get the proxy from gsettings
+            mode = (
+                subprocess.run(
+                    ["gsettings", "get", "org.gnome.system.proxy", "mode"],
+                    stdout=subprocess.PIPE,
+                )
+                .stdout.decode()
+                .strip("\n '\"")
+            )
+            if "manual" in mode:
+                host = (
+                    subprocess.run(
+                        ["gsettings", "get", "org.gnome.system.proxy.http", "host"],
+                        stdout=subprocess.PIPE,
+                    )
+                    .stdout.decode()
+                    .strip("\n '\"")
+                )
+                port = (
+                    subprocess.run(
+                        ["gsettings", "get", "org.gnome.system.proxy.http", "port"],
+                        stdout=subprocess.PIPE,
+                    )
+                    .stdout.decode()
+                    .strip("\n '\"")
+                )
+
+                proxy = ":".join((host, port))
         proxy = None
         if "https" in proxies:
             proxy = proxies["https"]
@@ -117,8 +147,13 @@ class Auth(metaclass=Singleton):
         if proxy is None or SKIP_PROXY:
             conn = httplib.HTTPSConnection(CDP_SERVER)
         else:
-            print("Using proxy", proxy)
-            conn = httplib.HTTPSConnection(proxy.rstrip("/"))
+            # Remove protocol from proxy
+            proxy = proxy[proxy.find("/") + 2 :]
+            proxy = proxy.lower().rstrip("/")
+            host = proxy.split(":")[0]
+            port = int(proxy.split(":")[1])
+
+            conn = httplib.HTTPSConnection(host, port)
             conn.set_tunnel(CDP_SERVER)
         return conn
 

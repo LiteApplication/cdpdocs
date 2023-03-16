@@ -1,8 +1,12 @@
 #!/usr/bin/env python3
 
 import os
+import sys
 
-from .auth import Auth, set_class_name
+
+del sys.path[0]  # Remove the current directory from the path
+
+from cdpdocs.auth import Auth, set_class_name
 from cdpdocs.doctree import SubjectTree
 
 
