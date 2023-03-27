@@ -42,8 +42,8 @@ class Auth(metaclass=Singleton):
         AuthAware.request = self.request
         AuthAware._has_auth = True
 
-    def authenticate(self, username, password):
-        request_body = f"login={username}&motdepasse={password}&permconn=0&connexion=1"
+    def authenticate(self, username, password, permanent=False):
+        request_body = f"login={username}&motdepasse={password}&permconn={1 if permanent else 0}&connexion=1"
         try:
             connection = self.request(
                 "POST",
