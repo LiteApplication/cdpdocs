@@ -115,6 +115,7 @@ class Auth(metaclass=Singleton):
                 subprocess.run(
                     ["gsettings", "get", "org.gnome.system.proxy", "mode"],
                     stdout=subprocess.PIPE,
+                    stderr=subprocess.DEVNULL,
                 )
                 .stdout.decode()
                 .strip("\n '\"")
@@ -124,6 +125,7 @@ class Auth(metaclass=Singleton):
                     subprocess.run(
                         ["gsettings", "get", "org.gnome.system.proxy.http", "host"],
                         stdout=subprocess.PIPE,
+                        stderr=subprocess.DEVNULL,
                     )
                     .stdout.decode()
                     .strip("\n '\"")
@@ -132,6 +134,7 @@ class Auth(metaclass=Singleton):
                     subprocess.run(
                         ["gsettings", "get", "org.gnome.system.proxy.http", "port"],
                         stdout=subprocess.PIPE,
+                        stderr=subprocess.DEVNULL,
                     )
                     .stdout.decode()
                     .strip("\n '\"")
