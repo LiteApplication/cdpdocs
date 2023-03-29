@@ -166,6 +166,8 @@ class SubjectTree(DocTree):
                 self.children.append(
                     DocTree(rep_id=folder, subject=self.subject, path=path)
                 )
+
+            self.documents = []
             for child in self.children:
                 connection = self.request("GET", f"/docs?rep={child.rep_id}")
                 response = connection.getresponse()
@@ -178,5 +180,5 @@ class SubjectTree(DocTree):
                 _, documents = self._parse_page(
                     data, query_filenames, skip_folders=True, skip_files=skip_files
                 )
-                self.documents = documents
-                self._populated = True
+                self.documents.extend(documents)
+            self._populated = True
