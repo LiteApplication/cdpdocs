@@ -109,38 +109,6 @@ class Auth(metaclass=Singleton):
 
     def _get_proxy_connection(self) -> httplib.HTTPSConnection:
         proxies = getproxies()
-        if proxies == {}:
-            # Get the proxy from gsettings
-            mode = (
-                subprocess.run(
-                    ["gsettings", "get", "org.gnome.system.proxy", "mode"],
-                    stdout=subprocess.PIPE,
-                    stderr=subprocess.DEVNULL,
-                )
-                .stdout.decode()
-                .strip("\n '\"")
-            )
-            if "manual" in mode:
-                host = (
-                    subprocess.run(
-                        ["gsettings", "get", "org.gnome.system.proxy.http", "host"],
-                        stdout=subprocess.PIPE,
-                        stderr=subprocess.DEVNULL,
-                    )
-                    .stdout.decode()
-                    .strip("\n '\"")
-                )
-                port = (
-                    subprocess.run(
-                        ["gsettings", "get", "org.gnome.system.proxy.http", "port"],
-                        stdout=subprocess.PIPE,
-                        stderr=subprocess.DEVNULL,
-                    )
-                    .stdout.decode()
-                    .strip("\n '\"")
-                )
-
-                proxy = ":".join((host, port))
         proxy = None
         if "https" in proxies:
             proxy = proxies["https"]
