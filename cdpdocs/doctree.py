@@ -1,5 +1,6 @@
 import re
 import time
+from typing import Iterable
 
 from .auth import Auth, AuthAware
 from .document import Document
@@ -23,7 +24,11 @@ class DocTree(AuthAware):
         return f"DocTree<{self.subject}>({self.rep_id}, '{'/'.join(self.path)}')"
 
     def _parse_page(
-        self, page: str, query_filenames=True, skip_folders=False, skip_files=None
+        self,
+        page: str,
+        query_filenames=True,
+        skip_folders=False,
+        skip_files=None,
     ) -> tuple[list["DocTree"], list[Document]]:
         children = []
         documents = []
@@ -58,6 +63,7 @@ class DocTree(AuthAware):
                         int(match.group(2)),
                         match.group(3) if not query_filenames else None,
                         query_filename=query_filenames,
+                        parent=self,
                     )
                 )
                 print(f"Found document {documents[-1]}")
@@ -65,6 +71,8 @@ class DocTree(AuthAware):
         return children, documents
 
     def explore(self, query_filenames=True, skip_files=None):
+        if self._populated:  # Avoid infinite recursion
+            return
         connection = self.request("GET", f"/docs?rep={self.rep_id}")
         response = connection.getresponse()
         if response.status != 200:
@@ -96,7 +104,7 @@ class DocTree(AuthAware):
                 return child.by_path(path[1:])
         raise FileNotFoundError(f"Path {path} not found in {self}")
 
-    def iter_documents(self):
+    def iter_documents(self) -> Iterable[Document]:
         if not self._populated and not self._folders_recursive:
             raise RuntimeError("Cannot iterate in unpopulated tree")
         for document in self.documents:

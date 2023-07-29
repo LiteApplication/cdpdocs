@@ -12,19 +12,15 @@ from cdpdocs.doctree import SubjectTree
 
 def dump_subject(subject: str, path: str):
     tree = SubjectTree(subject)
-    tree.explore()
+    tree.explore(query_filenames=False)
 
-    for child in tree.children:
-        # Create a directory for the child
-        child_path = os.path.join(path, *child.path)
+    os.makedirs(os.path.join(path, subject), exist_ok=True)
 
-        # Create the directory if it doesn't exist
+    for doc in tree.iter_documents():
+        child_path = os.path.join(path, *doc.parent.path)
         if not os.path.exists(child_path):
-            print(child_path)
             os.makedirs(child_path)
-
-        for doc in child.documents:
-            doc.save(child_path)
+        doc.save(child_path)
 
 
 def dump_subjects(subjects: list[str], path: str):

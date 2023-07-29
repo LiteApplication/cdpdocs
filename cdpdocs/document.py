@@ -6,8 +6,11 @@ BUFFER_SIZE = 1024 * 1024
 
 
 class Document(AuthAware):
-    def __init__(self, document_id, filename=None, query_filename=True):
+    def __init__(
+        self, document_id, filename=None, query_filename=True, parent: "DocTree" = None
+    ):
         self.document_id = document_id
+        self.parent = parent
 
         self._queried_filename = None
         if filename is None and query_filename:
