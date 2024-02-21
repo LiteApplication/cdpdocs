@@ -1,7 +1,9 @@
 # CDPDocs
+
 Document downloader for cahier-de-prepa.fr
 
-# Usage
+## Usage
+
 ```python
 from cdpdocs.auth import Auth, set_class_name
 from cdpdocs.doctree import SubjectTree
@@ -14,7 +16,7 @@ auth.authenticate("username", "password")
 # Authenticate using a json file
 auth = Auth(from_file="credentials.json")
 # credentials.json : 
-# { "username": "myusername", "password": "password1234"
+# { "username": "myusername", "password": "password1234" }
 
 # Get a subject tree
 maths = SubjectTree("maths")
@@ -34,6 +36,3 @@ list_docs_recursive(maths)
 # Download a document
 maths.children[0].documents[0].download() # Assuming the first child of maths has at least one document 
 ```
-    
-You need to edit the `src/cdpdocs/auth.py` file to change the `CLASS_NAME` variable to match your class's name on cahier-de-prepa.fr.
-
